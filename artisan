@@ -1,0 +1,76 @@
+#!/usr/bin/env php
+<?php
+
+define('LARAVEL_START', microtime(true));
+
+// Suppress PHP deprecation notices that cause older Laravel/vendor code to throw
+// ErrorException on PHP 8.2+ during CLI commands. This is a minimal, reversible
+// local change to allow the installer to run under newer PHP versions.
+if (!defined('LARAVEL_SUPPRESS_DEPRECATIONS')) {
+    define('LARAVEL_SUPPRESS_DEPRECATIONS', true);
+    error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+    ini_set('display_errors', '0');
+}
+
+// Temporarily ignore E_DEPRECATED and E_USER_DEPRECATED at the PHP error handler
+// level so that Composer/autoload and vendor files won't emit notices that may be
+// converted into exceptions by frameworks during bootstrap. We keep the handler
+// in place until Laravel registers its own error handler during bootstrap.
+$previousErrorHandler = set_error_handler(function ($severity, $message, $file, $line) {
+    if (($severity & (E_DEPRECATED | E_USER_DEPRECATED)) !== 0) {
+        // Ignore deprecation notices
+        return true;
+    }
+
+    // Let normal error handling proceed for other severities
+    return false;
+});
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader
+| for our application. We just need to utilize it! We'll require it
+| into the script here so that we do not have to worry about the
+| loading of any our classes "manually". Feels great to relax.
+|
+*/
+
+require __DIR__.'/vendor/autoload.php';
+
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+/*
+|--------------------------------------------------------------------------
+| Run The Artisan Application
+|--------------------------------------------------------------------------
+|
+| When we run the console application, the current CLI command will be
+| executed in this console and the response sent back to a terminal
+| or another output device for the developers. Here goes nothing!
+|
+*/
+
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+
+$status = $kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput,
+    new Symfony\Component\Console\Output\ConsoleOutput
+);
+
+/*
+|--------------------------------------------------------------------------
+| Shutdown The Application
+|--------------------------------------------------------------------------
+|
+| Once Artisan has finished running, we will fire off the shutdown events
+| so that any final work may be done by the application before we shut
+| down the process. This is the last thing to happen to the request.
+|
+*/
+
+$kernel->terminate($input, $status);
+
+exit($status);
