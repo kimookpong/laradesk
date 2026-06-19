@@ -24,13 +24,13 @@
 
 ## Requirements
 
-| Requirement | Version |
-|---|---|
-| PHP | `>= 7.3` or `>= 8.x` |
-| MySQL | `>= 5.7` |
-| MariaDB | `>= 10.2.7` |
-| Composer | Latest |
-| Node.js & NPM | Latest LTS |
+| Requirement   | Version              |
+| ------------- | -------------------- |
+| PHP           | `>= 7.3` or `>= 8.x` |
+| MySQL         | `>= 5.7`             |
+| MariaDB       | `>= 10.2.7`          |
+| Composer      | Latest               |
+| Node.js & NPM | Latest LTS           |
 
 ### Required PHP Extensions
 
@@ -56,11 +56,11 @@ php -v
 4. Create a new database (e.g. via phpMyAdmin)
 5. Open your app URL in a browser — the installer wizard will launch automatically
 6. Follow the 5-step wizard:
-   - ✅ Server requirements check
-   - ✅ Folder permissions check
-   - ✅ Database connection & migration
-   - ✅ Default admin account creation
-   - ✅ Installation complete
+    - ✅ Server requirements check
+    - ✅ Folder permissions check
+    - ✅ Database connection & migration
+    - ✅ Default admin account creation
+    - ✅ Installation complete
 
 > After installation the wizard is disabled and can no longer be accessed.  
 > Default credentials: **admin@admin.com** / **12345678** — change these immediately.
@@ -118,11 +118,11 @@ php artisan install:update
 
 ## Demo Accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Super Admin | admin@admin.com | 12345678 |
-| Agent | agent@agent.com | 12345678 |
-| Customer | customer@customer.com | 12345678 |
+| Role        | Email                 | Password |
+| ----------- | --------------------- | -------- |
+| Super Admin | admin@admin.com       | 12345678 |
+| Agent       | agent@agent.com       | 12345678 |
+| Customer    | customer@customer.com | 12345678 |
 
 ---
 
@@ -130,14 +130,14 @@ php artisan install:update
 
 See `.env.example` for all configurable options. Key variables:
 
-| Variable | Description |
-|---|---|
-| `APP_NAME` | Application name |
-| `APP_URL` | Full URL of your application |
-| `DB_HOST` / `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` | Database connection |
-| `MAIL_MAILER` / `MAIL_HOST` / `MAIL_PORT` | Mail server settings |
-| `SANCTUM_STATEFUL_DOMAINS` | Domains for Sanctum cookie authentication |
-| `SENTRY_LARAVEL_DSN` | Sentry error tracking DSN (optional) |
+| Variable                                                  | Description                               |
+| --------------------------------------------------------- | ----------------------------------------- |
+| `APP_NAME`                                                | Application name                          |
+| `APP_URL`                                                 | Full URL of your application              |
+| `DB_HOST` / `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` | Database connection                       |
+| `MAIL_MAILER` / `MAIL_HOST` / `MAIL_PORT`                 | Mail server settings                      |
+| `SANCTUM_STATEFUL_DOMAINS`                                | Domains for Sanctum cookie authentication |
+| `SENTRY_LARAVEL_DSN`                                      | Sentry error tracking DSN (optional)      |
 
 ---
 
@@ -151,18 +151,18 @@ php artisan test
 
 ## References
 
-| Resource | Link |
-|---|---|
-| 📖 Official Documentation | [https://docs.getlaradesk.com](https://docs.getlaradesk.com) |
-| 🚀 Getting Started | [https://docs.getlaradesk.com/getting-started](https://docs.getlaradesk.com/getting-started) |
-| 📋 Requirements | [https://docs.getlaradesk.com/getting-started/requirements](https://docs.getlaradesk.com/getting-started/requirements) |
-| 🔧 Installation Guide | [https://docs.getlaradesk.com/getting-started/installation](https://docs.getlaradesk.com/getting-started/installation) |
-| 🔄 Update Guide | [https://docs.getlaradesk.com/getting-started/updates](https://docs.getlaradesk.com/getting-started/updates) |
-| 🎮 Live Demo | [https://getlaradesk.com/auth/login](https://getlaradesk.com/auth/login) |
-| 🛒 Buy on CodeCanyon | [https://codecanyon.net/item/laradesk-helpdesk-ticketing-system/29452696](https://codecanyon.net/item/laradesk-helpdesk-ticketing-system/29452696) |
-| 🏗️ Laravel Dashboard Docs | [https://dacoto.gitbook.io/laravel-dashboard/v/4.x](https://dacoto.gitbook.io/laravel-dashboard/v/4.x) |
-| ⚙️ Manual Installation | [https://dacoto.gitbook.io/laravel-dashboard/v/4.x/getting-started/installation/manual-installation](https://dacoto.gitbook.io/laravel-dashboard/v/4.x/getting-started/installation/manual-installation) |
-| 👥 User Role Manager | [https://dacoto.gitbook.io/laravel-dashboard/v/4.x/dashboard/administration/role-manager](https://dacoto.gitbook.io/laravel-dashboard/v/4.x/dashboard/administration/role-manager) |
+| Resource                  | Link                                                                                                                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📖 Official Documentation | [https://docs.getlaradesk.com](https://docs.getlaradesk.com)                                                                                                                                             |
+| 🚀 Getting Started        | [https://docs.getlaradesk.com/getting-started](https://docs.getlaradesk.com/getting-started)                                                                                                             |
+| 📋 Requirements           | [https://docs.getlaradesk.com/getting-started/requirements](https://docs.getlaradesk.com/getting-started/requirements)                                                                                   |
+| 🔧 Installation Guide     | [https://docs.getlaradesk.com/getting-started/installation](https://docs.getlaradesk.com/getting-started/installation)                                                                                   |
+| 🔄 Update Guide           | [https://docs.getlaradesk.com/getting-started/updates](https://docs.getlaradesk.com/getting-started/updates)                                                                                             |
+| 🎮 Live Demo              | [https://getlaradesk.com/auth/login](https://getlaradesk.com/auth/login)                                                                                                                                 |
+| 🛒 Buy on CodeCanyon      | [https://codecanyon.net/item/laradesk-helpdesk-ticketing-system/29452696](https://codecanyon.net/item/laradesk-helpdesk-ticketing-system/29452696)                                                       |
+| 🏗️ Laravel Dashboard Docs | [https://dacoto.gitbook.io/laravel-dashboard/v/4.x](https://dacoto.gitbook.io/laravel-dashboard/v/4.x)                                                                                                   |
+| ⚙️ Manual Installation    | [https://dacoto.gitbook.io/laravel-dashboard/v/4.x/getting-started/installation/manual-installation](https://dacoto.gitbook.io/laravel-dashboard/v/4.x/getting-started/installation/manual-installation) |
+| 👥 User Role Manager      | [https://dacoto.gitbook.io/laravel-dashboard/v/4.x/dashboard/administration/role-manager](https://dacoto.gitbook.io/laravel-dashboard/v/4.x/dashboard/administration/role-manager)                       |
 
 ---
 

@@ -150,7 +150,8 @@ export default {
             editorConfig: {
                 branding: false,
                 browser_spellcheck: true,
-                paste_as_text: true,
+                paste_as_text: false,
+                paste_data_images: true,
                 statusbar: false,
                 menubar: false,
                 convert_urls: false,
@@ -167,6 +168,15 @@ export default {
                 contextmenu_never_use_native: true,
                 plugins: 'paste image link code fullscreen autoresize',
                 toolbar: 'undo redo | upload attachment link cannedReply shortCode | fullscreen code',
+                images_upload_handler: function (blobInfo, success, failure) {
+                    const formData = new FormData();
+                    formData.append('file', blobInfo.blob(), blobInfo.filename());
+                    axios.post('api/files', formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(function (response) {
+                        success(response.data.url);
+                    }).catch(function () {
+                        failure('Image upload failed');
+                    });
+                },
                 setup: function (editor) {
                     if (self.plugins.images) {
                         editor.ui.registry.addButton('upload', {

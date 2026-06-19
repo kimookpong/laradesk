@@ -17,6 +17,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use Storage;
 use Str;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
@@ -88,13 +89,13 @@ class FileController extends Controller
     /**
      * @param  string  $uuid
      * @param  Request  $request
-     * @return StreamedResponse
+     * @return StreamedResponse|BinaryFileResponse
      * @throws Exception
      */
-    public function download(string $uuid, Request $request): StreamedResponse
+    public function download(string $uuid, Request $request)
     {
         $file = File::where('uuid', $uuid)->firstOrFail();
-        if ($file->path !== 'public') {
+        if ($file->disk !== 'public') {
             /** @var PersonalAccessToken $model */
             $model = Sanctum::$personalAccessTokenModel;
             $accessToken = $model::findToken($request->get('token'));
@@ -120,6 +121,11 @@ class FileController extends Controller
         }
         if (!Storage::disk($file->disk)->exists($file->path.DIRECTORY_SEPARATOR.$file->server_name)) {
             abort(404);
+        }
+        $videoExtensions = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv', 'ogg', 'm4v', '3gp'];
+        if (in_array($file->extension, $videoExtensions)) {
+            $fullPath = Storage::disk($file->disk)->path($file->path.DIRECTORY_SEPARATOR.$file->server_name);
+            return response()->file($fullPath, ['Content-Type' => $file->mime]);
         }
         return Storage::disk($file->disk)->download($file->path.DIRECTORY_SEPARATOR.$file->server_name, $file->name);
     }

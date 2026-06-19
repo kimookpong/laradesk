@@ -145,6 +145,17 @@ class TicketController extends Controller
         return response()->json(['message' => __('An error occurred while saving data')], 500);
     }
 
+    public function updateStatus(Request $request, Ticket $ticket): JsonResponse
+    {
+        if ($ticket->user_id !== Auth::id()) {
+            return response()->json(['message' => __('Not found')], 404);
+        }
+        $request->validate(['status_id' => 'required|exists:statuses,id']);
+        $ticket->status_id = $request->get('status_id');
+        $ticket->save();
+        return response()->json(['message' => __('Data saved correctly')]);
+    }
+
     public function departments(): JsonResponse
     {
         return response()->json(DepartmentSelectResource::collection(Department::where('public', '=', true)->get()));

@@ -315,6 +315,11 @@ class TicketController extends Controller
             $ticket->saveOrFail();
             return response()->json(['message' => __('Ticket priority has been changed'), 'ticket' => new TicketManageResource($ticket), 'access' => true]);
         }
+        if ($action === 'status') {
+            $ticket->status_id = $value;
+            $ticket->saveOrFail();
+            return response()->json(['message' => __('Ticket status has been changed'), 'ticket' => new TicketManageResource($ticket), 'access' => true]);
+        }
         return response()->json(['message' => __('Quick action not found')], 404);
     }
 
