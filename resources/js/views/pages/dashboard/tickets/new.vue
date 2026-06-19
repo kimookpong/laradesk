@@ -115,7 +115,7 @@
                                         >
                                             <template v-slot:top>
                                                 <div :class="{'bg-gray-200': uploadingFileProgress > 0}" class="h-1 w-full">
-                                                    <div :style="{width: uploadingFileProgress + '%'}" class="bg-blue-500 py-0.5"></div>
+                                                    <div :style="{width: uploadingFileProgress + '%'}" class="bg-primary-500 py-0.5"></div>
                                                 </div>
                                             </template>
                                         </input-wysiwyg>

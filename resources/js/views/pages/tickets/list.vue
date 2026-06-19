@@ -4,7 +4,7 @@
         <header class="kanban-header px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-gray-900">{{ $t('My tickets') }}</h2>
-                <router-link class="btn btn-blue shadow-sm rounded-md" to="/tickets/new">
+                <router-link class="btn btn-primary shadow-sm rounded-lg" to="/tickets/new">
                     {{ $t('New ticket') }}
                 </router-link>
             </div>
@@ -250,6 +250,14 @@ export default {
 
 @media (min-width: 1024px) {
     .kanban-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Mobile: stack columns and scroll the board vertically ── */
+@media (max-width: 639px) {
+    .kanban-main { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .kanban-grid { overflow: visible; }
+    .kanban-col { min-height: 200px; }
+    .col-body { overflow-y: visible; }
 }
 
 /* ── Column ── */

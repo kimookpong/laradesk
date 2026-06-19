@@ -3,7 +3,7 @@
         <loading :status="loading.form"/>
         <div class="flex relative">
             <div :style="{height: 'calc(100vh - 70px)'}" class="flex-auto min-w-0">
-                <div class="w-full h:auto sm:h-14 border-b sm:px-3">
+                <div class="w-full h-auto sm:h-14 border-b sm:px-3">
                     <div class="sm:flex sm:justify-between">
                         <div class="flex">
                             <button class="btn p-4 rounded-none" type="button" @click="$router.push('/dashboard/tickets')">
@@ -102,7 +102,7 @@
                         <div class="flex items-center justify-end m-3 sm:m-0">
                             <div class="text-2xl font-semibold">#{{ ticket.id }}</div>
                             <div v-if="ticket.status" class="px-3">
-                                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+                                <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
                                     {{ ticket.status.name }}
                                 </div>
                             </div>
@@ -136,6 +136,21 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Customer info (mobile/tablet only — desktop shows it in the right panel) -->
+                        <div v-if="ticket.user" class="lg:hidden flex items-center px-6 py-3 border-b bg-gray-100">
+                            <img
+                                :alt="$t('Avatar')"
+                                :src="ticket.user.avatar !== 'gravatar' ? ticket.user.avatar : ticket.user.gravatar"
+                                class="h-10 w-10 rounded-full flex-shrink-0"
+                            />
+                            <div class="ml-3 min-w-0">
+                                <div class="text-gray-800 font-medium truncate">{{ ticket.user.name }}</div>
+                                <div class="flex items-center text-sm leading-5 text-gray-600">
+                                    <svg-vue class="flex-shrink-0 mr-1.5 h-4 w-4" icon="font-awesome.envelope-solid"></svg-vue>
+                                    <span class="truncate">{{ ticket.user.email }}</span>
+                                </div>
+                            </div>
+                        </div>
                         <div v-show="replyForm" class="px-6 py-3 border-b">
                             <loading :status="loading.reply"/>
                             <form @submit.prevent="addReply">
@@ -148,7 +163,7 @@
                                 >
                                     <template v-slot:top>
                                         <div :class="{'bg-gray-200': uploadingFileProgress > 0}" class="h-1 w-full">
-                                            <div :style="{width: uploadingFileProgress + '%'}" class="bg-blue-500 py-0.5"></div>
+                                            <div :style="{width: uploadingFileProgress + '%'}" class="bg-primary-500 py-0.5"></div>
                                         </div>
                                     </template>
                                     <template v-slot:bottom>
@@ -165,7 +180,7 @@
                                                     id="status"
                                                     v-model="ticketReply.status_id"
                                                     aria-label="Sort by"
-                                                    class="block form-select pl-3 pr-9 py-2 border-l border-r-0 border-t-0 border-b-0 border-gray-400 rounded-none bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                                                    class="block form-select pl-3 pr-9 py-2 border-l border-r-0 border-t-0 border-b-0 border-gray-400 rounded-none bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-primary-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                                                 >
                                                     <template v-for="status in statusList">
                                                         <option :value="status.id">{{ status.name }}</option>
@@ -247,7 +262,7 @@
                         <img
                             :alt="$t('Avatar')"
                             :src="ticket.user.avatar !== 'gravatar' ? ticket.user.avatar : ticket.user.gravatar"
-                            class="h-16 w-16"
+                            class="h-16 w-16 rounded-full"
                         />
                     </div>
                     <div class="mt-2">

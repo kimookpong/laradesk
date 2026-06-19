@@ -7,7 +7,7 @@
                 </div>
                 <div class="mt-4 flex md:mt-0 md:ml-4">
                     <router-link
-                        class="btn btn-blue shadow-sm rounded-md"
+                        class="btn btn-primary shadow-sm rounded-md"
                         to="/dashboard/admin/settings"
                     >
                         {{ $t('Back') }}
@@ -44,7 +44,7 @@
                                         <select
                                             id="app_locale"
                                             v-model="app_locale"
-                                            class="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                                            class="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-primary-300 sm:text-sm sm:leading-5"
                                             required
                                         >
                                             <option :value="null" disabled>{{ $t('Select an option') }}</option>

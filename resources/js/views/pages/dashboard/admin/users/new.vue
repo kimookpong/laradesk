@@ -79,7 +79,7 @@
                                         <select
                                             id="role"
                                             v-model="user.role_id"
-                                            class="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                            class="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-primary-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                                             required
                                         >
                                             <option :value="null" disabled>{{ $t('Select an option') }}</option>

@@ -1,12 +1,12 @@
 <template>
     <div class="grid grid-cols-1 gap-6">
-        <div class="flex flex-col bg-white rounded-lg shadow">
-            <div class="p-4">
-                <div class="font-semibold">
+        <div class="card flex flex-col">
+            <div class="card-header">
+                <div class="font-semibold text-gray-900">
                     {{ $t('Opened tickets this year') }}
                 </div>
             </div>
-            <div class="p-4">
+            <div class="card-body relative">
                 <loading :status="loading"/>
                 <line-chart ref="chart" :chart-data="chartData" :height="350"></line-chart>
             </div>
@@ -30,7 +30,7 @@ export default {
                 datasets: [
                     {
                         label: this.$i18n.t('Tickets'),
-                        backgroundColor: '#4299e1',
+                        backgroundColor: '#2563eb',
                         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     }
                 ],

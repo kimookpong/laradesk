@@ -10,7 +10,7 @@
                     </div>
                     <div class="mt-4 flex md:mt-0 md:ml-4">
                         <router-link
-                            class="btn btn-blue shadow-sm rounded-md"
+                            class="btn btn-primary shadow-sm rounded-lg"
                             to="/tickets/list"
                         >
                             {{ $t('Return to tickets list') }}
@@ -48,7 +48,7 @@
                             >
                                 <template v-slot:top>
                                     <div :class="{'bg-gray-200': uploadingFileProgress > 0}" class="h-1 w-full">
-                                        <div :style="{width: uploadingFileProgress + '%'}" class="bg-blue-500 py-0.5"></div>
+                                        <div :style="{width: uploadingFileProgress + '%'}" class="bg-primary-500 py-0.5"></div>
                                     </div>
                                 </template>
                                 <template v-slot:bottom>

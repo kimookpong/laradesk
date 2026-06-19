@@ -63,7 +63,7 @@
                                             <span class="ml-5 rounded-md shadow-sm">
                                                 <input ref="changeAvatar" accept=".png,.jpg,.jpeg" hidden type="file" @change="changeAvatar($event)">
                                                 <button
-                                                    class="py-2 px-3 border border-gray-300 rounded-md text-sm leading-4 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out"
+                                                    class="py-2 px-3 border border-gray-300 rounded-md text-sm leading-4 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-primary-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out"
                                                     type="button"
                                                     @click="selectAvatar"
                                                 >
@@ -76,7 +76,7 @@
                             </div>
                             <div class="bg-gray-100 text-right px-4 py-3 sm:px-6">
                                 <span class="inline-flex">
-                                    <button class="btn btn-blue rounded-md shadow-sm" type="submit">
+                                    <button class="btn btn-primary rounded-md shadow-sm" type="submit">
                                         {{ $t('Save') }}
                                     </button>
                                 </span>
@@ -140,7 +140,7 @@
                             </div>
                             <div class="bg-gray-100 text-right px-4 py-3 sm:px-6">
                                 <span class="inline-flex">
-                                    <button class="btn btn-blue rounded-md shadow-sm" type="submit">
+                                    <button class="btn btn-primary rounded-md shadow-sm" type="submit">
                                         {{ $t('Change password') }}
                                     </button>
                                 </span>

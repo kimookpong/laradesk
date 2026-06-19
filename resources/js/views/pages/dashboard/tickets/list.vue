@@ -18,23 +18,23 @@
                     </div>
                     <!-- Filters sidebar trigger -->
                     <button
-                        class="inline-flex items-center rounded-md border border-gray-400 px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:text-gray-500 focus:outline-none transition ease-in-out duration-150"
+                        class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:text-primary-600 hover:border-primary-300 focus:outline-none transition ease-in-out duration-150"
                         type="button"
                         @click="openFiltersSidebar"
                     >
                         <svg-vue class="mr-2 h-4 w-4" icon="font-awesome.filter-regular"></svg-vue>
                         {{ $t('Filters') }}
-                        <span v-if="activeFiltersCount > 0" class="ml-1 bg-blue-500 text-white text-xs rounded-full px-1.5 py-0.5">{{ activeFiltersCount }}</span>
+                        <span v-if="activeFiltersCount > 0" class="ml-1 bg-primary-500 text-white text-xs rounded-full px-1.5 py-0.5">{{ activeFiltersCount }}</span>
                     </button>
                     <!-- Refresh -->
                     <button
-                        class="rounded-md border border-gray-400 px-3 py-2 bg-white text-sm text-gray-700 hover:text-gray-500 focus:outline-none transition ease-in-out duration-150"
+                        class="rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm text-gray-700 hover:text-primary-600 hover:border-primary-300 focus:outline-none transition ease-in-out duration-150"
                         type="button"
                         @click="load"
                     >
                         <svg-vue class="w-4 h-4" icon="font-awesome.sync-regular"></svg-vue>
                     </button>
-                    <router-link class="btn btn-blue shadow-sm rounded-md" to="/dashboard/tickets/new">
+                    <router-link class="btn btn-primary shadow-sm rounded-lg" to="/dashboard/tickets/new">
                         {{ $t('Create ticket') }}
                     </router-link>
                 </div>
@@ -274,7 +274,7 @@
                                     <!-- Reset -->
                                     <button
                                         v-if="activeFiltersCount > 0"
-                                        class="w-full text-sm text-red-500 hover:text-red-700 py-2 border border-red-200 rounded-md"
+                                        class="w-full text-sm text-red-500 hover:text-red-700 py-2 border border-red-200 rounded-lg"
                                         type="button"
                                         @click="resetFilters"
                                     >
@@ -509,6 +509,14 @@ export default {
 
 @media (min-width: 1024px) {
     .dash-kanban-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Mobile: stack columns and scroll the board vertically ── */
+@media (max-width: 639px) {
+    .dash-kanban-main { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .dash-kanban-grid { overflow: visible; }
+    .dash-kanban-col { min-height: 200px; }
+    .col-body { overflow-y: visible; }
 }
 
 /* ── Column ── */

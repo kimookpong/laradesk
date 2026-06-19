@@ -5,7 +5,7 @@
                 aria-expanded="true"
                 aria-haspopup="listbox"
                 aria-labelledby="listbox-label"
-                class="relative w-full rounded-md border border-gray-400 bg-white text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                class="relative w-full rounded-md border border-gray-400 bg-white text-left focus:outline-none focus:shadow-outline-blue focus:border-primary-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                 type="button"
                 @click="openDropdown"
             >
@@ -18,7 +18,7 @@
                                     v-model="search"
                                     :placeholder="$t('Search')"
                                     aria-label="Search"
-                                    class="pl-3 pr-10 py-2 relative w-full rounded-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                                    class="pl-3 pr-10 py-2 relative w-full rounded-md focus:outline-none focus:shadow-outline-blue focus:border-primary-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                                     @click.prevent
                                 >
                             </div>

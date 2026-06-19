@@ -33,7 +33,7 @@
                                 >
                                     <div v-show="dropdownOpen" class="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                                         <div aria-labelledby="user-menu" aria-orientation="vertical" class="py-1 rounded-md bg-white shadow-xs" role="menu">
-                                            <div class="flex items-center px-4 ce py-2 border-b border-gray-100">
+                                            <div class="flex items-center px-4 py-2 border-b border-gray-100">
                                                 <img
                                                     :src="$store.state.user.avatar === 'gravatar' ? $store.state.user.gravatar : $store.state.user.avatar"
                                                     alt="User avatar"

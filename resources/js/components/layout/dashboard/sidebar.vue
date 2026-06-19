@@ -63,7 +63,7 @@
                     <logo></logo>
                 </router-link>
                 <div class="h-0 flex-1 flex flex-col overflow-y-auto">
-                    <nav class="flex-1 pb-4 bg-gray-800">
+                    <nav class="flex-1 pt-2 pb-4 bg-gray-800">
                         <menu-list></menu-list>
                     </nav>
                 </div>

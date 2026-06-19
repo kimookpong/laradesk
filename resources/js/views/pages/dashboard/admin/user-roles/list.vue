@@ -7,7 +7,7 @@
                 </div>
                 <div class="mt-4 flex md:mt-0 md:ml-4">
                     <router-link
-                        class="btn btn-blue shadow-sm rounded-md"
+                        class="btn btn-primary shadow-sm rounded-md"
                         to="/dashboard/admin/user-roles/new"
                     >
                         {{ $t('Create user role') }}
@@ -36,7 +36,7 @@
                             </div>
                             <span class="relative inline-flex shadow-sm rounded-r-md">
                                 <button
-                                    class="relative -ml-px inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700"
+                                    class="relative -ml-px inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-primary-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700"
                                     type="button"
                                     @click="changeSort"
                                 >
@@ -56,7 +56,7 @@
                                     id="sortBy"
                                     v-model="sort.column"
                                     aria-label="Sort by"
-                                    class="-ml-px block form-select w-full pl-3 pr-9 py-2 rounded-l-none rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                                    class="-ml-px block form-select w-full pl-3 pr-9 py-2 rounded-l-none rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-primary-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                                     @change="changeSort"
                                 >
                                     <option value="name">{{ $t('Name') }}</option>

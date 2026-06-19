@@ -1,46 +1,18 @@
 <template>
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <loading :status="stats.open_tickets == null"/>
-            <div class="px-4 py-5 sm:p-6">
+        <div
+            v-for="card in cards"
+            :key="card.key"
+            class="card card-hover relative overflow-hidden"
+        >
+            <loading :status="stats[card.key] == null"/>
+            <span :class="card.accent" class="absolute inset-y-0 left-0 w-1"></span>
+            <div class="px-5 py-5 sm:px-6">
                 <dt class="text-sm font-medium text-gray-500 truncate">
-                    {{ $t('Open tickets') }}
+                    {{ card.label }}
                 </dt>
                 <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    {{ stats.open_tickets ? stats.open_tickets : 0 }}
-                </dd>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <loading :status="stats.pending_tickets == null"/>
-            <div class="px-4 py-5 sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">
-                    {{ $t('Pending tickets') }}
-                </dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    {{ stats.pending_tickets ? stats.pending_tickets : 0 }}
-                </dd>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <loading :status="stats.solved_tickets == null"/>
-            <div class="px-4 py-5 sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">
-                    {{ $t('Solved tickets') }}
-                </dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    {{ stats.solved_tickets ? stats.solved_tickets : 0 }}
-                </dd>
-            </div>
-        </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <loading :status="stats.without_agent == null"/>
-            <div class="px-4 py-5 sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">
-                    {{ $t('Without assign agent') }}
-                </dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                    {{ stats.without_agent ? stats.without_agent : 0 }}
+                    {{ stats[card.key] ? stats[card.key] : 0 }}
                 </dd>
             </div>
         </div>
@@ -58,6 +30,16 @@ export default {
                 solved_tickets: null,
                 without_agent: null,
             }
+        }
+    },
+    computed: {
+        cards() {
+            return [
+                {key: 'open_tickets', label: this.$t('Open tickets'), accent: 'bg-primary-500'},
+                {key: 'pending_tickets', label: this.$t('Pending tickets'), accent: 'bg-yellow-400'},
+                {key: 'solved_tickets', label: this.$t('Solved tickets'), accent: 'bg-green-500'},
+                {key: 'without_agent', label: this.$t('Without assign agent'), accent: 'bg-red-500'},
+            ];
         }
     },
     mounted() {

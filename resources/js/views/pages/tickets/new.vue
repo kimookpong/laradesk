@@ -10,7 +10,7 @@
                     </div>
                     <div class="mt-4 flex md:mt-0 md:ml-4">
                         <router-link
-                            class="btn btn-blue shadow-sm rounded-md"
+                            class="btn btn-primary shadow-sm rounded-md"
                             to="/tickets/list"
                         >
                             {{ $t('Return to tickets list') }}

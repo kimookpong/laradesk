@@ -1,6 +1,6 @@
 <template>
-    <div class="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
-        <button aria-label="Open sidebar" class="px-4 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600 md:hidden" @click="$emit('toggleSidebar')">
+    <div class="relative z-10 flex-shrink-0 flex h-16 bg-white shadow-soft border-b border-gray-100">
+        <button aria-label="Open sidebar" class="px-4 text-gray-500 rounded-md focus:outline-none focus:bg-primary-50 focus:text-primary-600 md:hidden" @click="$emit('toggleSidebar')">
             <svg-vue class="h-6 w-6" icon="font-awesome.bars-regular"></svg-vue>
         </button>
         <div class="w-full px-4 flex justify-end">
@@ -32,9 +32,9 @@
                             leave-class="transform opacity-100 scale-100"
                             leave-to-class="transform opacity-0 scale-95"
                         >
-                            <div v-show="dropdownOpen" class="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                <div aria-labelledby="user-menu" aria-orientation="vertical" class="py-1 rounded-md bg-white shadow-xs" role="menu">
-                                    <div class="flex items-center px-4 ce py-2 border-b border-gray-100">
+                            <div v-show="dropdownOpen" class="origin-top-right z-10 absolute right-0 mt-2 w-56 rounded-xl shadow-card-hover">
+                                <div aria-labelledby="user-menu" aria-orientation="vertical" class="py-1 rounded-xl bg-white border border-gray-100" role="menu">
+                                    <div class="flex items-center px-4 py-2 border-b border-gray-100">
                                         <img
                                             :src="$store.state.user.avatar === 'gravatar' ? $store.state.user.gravatar : $store.state.user.avatar"
                                             alt="User avatar"
@@ -47,7 +47,7 @@
                                     </div>
                                     <router-link
                                         v-if="$store.state.user ? $store.state.user.role.dashboard_access : false"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition ease-in-out duration-150"
                                         role="menuitem"
                                         to="/dashboard/home"
                                         @click.native="dropdownOpen = false"
@@ -55,7 +55,7 @@
                                         {{ $t('Dashboard') }}
                                     </router-link>
                                     <router-link
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition ease-in-out duration-150"
                                         role="menuitem"
                                         to="/tickets/list"
                                         @click.native="dropdownOpen = false"
@@ -63,7 +63,7 @@
                                         {{ $t('My tickets') }}
                                     </router-link>
                                     <router-link
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition ease-in-out duration-150"
                                         role="menuitem"
                                         to="/account"
                                         @click.native="dropdownOpen = false"
@@ -71,7 +71,7 @@
                                         {{ $t('Account settings') }}
                                     </router-link>
                                     <a
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition ease-in-out duration-150"
                                         href="/auth/logout"
                                         role="menuitem"
                                         @click.prevent="signOut"

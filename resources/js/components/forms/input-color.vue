@@ -15,7 +15,7 @@
             </div>
             <div v-on-clickaway="closeDropdown" class="inline-block text-left">
                 <button
-                    class="-ml-px h-full relative rounded-r-md inline-flex items-center px-3 py-2 h-full border border-gray-400 text-sm leading-5 font-medium rounded-r-md hover:bg-gray-100 hover:text-gray-500 hover:bg-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                    class="-ml-px h-full relative rounded-r-md inline-flex items-center px-3 py-2 h-full border border-gray-400 text-sm leading-5 font-medium rounded-r-md hover:bg-gray-100 hover:text-gray-500 hover:bg-white focus:outline-none focus:shadow-outline-blue focus:border-primary-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                     type="button"
                     @click="dropdownOpen = !dropdownOpen"
                 >
