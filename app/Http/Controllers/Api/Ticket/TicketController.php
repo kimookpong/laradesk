@@ -134,6 +134,13 @@ class TicketController extends Controller
                     return $attachment['id'];
                 }));
             }
+            // When a customer replies to a Resolved/Closed ticket, reopen it so it
+            // resurfaces for agents (otherwise the reply goes unnoticed).
+            // Assumes the seeded status ids (1=Open, 2=Pending, 3=Resolved, 4=Closed);
+            // statuses can be renamed but not added/removed, so these ids are stable.
+            if (in_array($ticket->status_id, [3, 4], true)) {
+                $ticket->status_id = 1;
+            }
             $ticket->updated_at = Carbon::now();
             $ticket->save();
             $ticket->user->notify((new NewTicketReplyFromUserToUser($ticket))->locale(Setting::getDecoded('app_locale')));

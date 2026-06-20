@@ -16,6 +16,15 @@
                             @input="onSearch"
                         >
                     </div>
+                    <!-- Bulk select toggle -->
+                    <button
+                        :class="selectMode ? 'border-primary-500 text-primary-600 bg-primary-50' : 'border-gray-300 text-gray-700 bg-white hover:text-primary-600 hover:border-primary-300'"
+                        class="inline-flex items-center rounded-lg border px-3 py-2 text-sm font-medium focus:outline-none transition ease-in-out duration-150"
+                        type="button"
+                        @click="toggleSelectMode"
+                    >
+                        {{ selectMode ? $t('Cancel') : $t('Select') }}
+                    </button>
                     <!-- Filters sidebar trigger -->
                     <button
                         class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:text-primary-600 hover:border-primary-300 focus:outline-none transition ease-in-out duration-150"
@@ -42,6 +51,38 @@
             <span v-if="loading" class="text-xs text-gray-400 mt-1 block">{{ $t('Loading') }}…</span>
         </div>
 
+        <!-- ── Bulk action bar (visible when items are selected) ── -->
+        <transition
+            enter-active-class="transition ease-out duration-200"
+            enter-class="opacity-0 translate-y-2"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition ease-in duration-150"
+            leave-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 translate-y-2"
+        >
+            <div v-if="selectMode && selectedIds.length > 0" class="bulk-action-bar">
+                <span class="text-sm font-medium text-gray-700 whitespace-no-wrap">{{ selectedIds.length }} {{ $t('selected') }}</span>
+                <select class="bulk-select" @change="bulkAction('status', $event.target.value); $event.target.value = ''">
+                    <option value="">{{ $t('Status') }}</option>
+                    <option v-for="s in statusList" :key="'s'+s.id" :value="s.id">{{ s.name }}</option>
+                </select>
+                <select class="bulk-select" @change="bulkAction('priority', $event.target.value); $event.target.value = ''">
+                    <option value="">{{ $t('Priority') }}</option>
+                    <option v-for="p in priorityList" :key="'p'+p.id" :value="p.id">{{ p.name }}</option>
+                </select>
+                <select class="bulk-select" @change="bulkAction('agent', $event.target.value); $event.target.value = ''">
+                    <option value="">{{ $t('Agent') }}</option>
+                    <option v-for="a in agentList" :key="'a'+a.id" :value="a.id">{{ a.name }}</option>
+                </select>
+                <select class="bulk-select" @change="bulkAction('department', $event.target.value); $event.target.value = ''">
+                    <option value="">{{ $t('Department') }}</option>
+                    <option v-for="d in departmentList" :key="'d'+d.id" :value="d.id">{{ d.name }}</option>
+                </select>
+                <button class="btn btn-red btn-sm rounded-lg" type="button" @click="bulkDelete">{{ $t('Delete') }}</button>
+                <button class="text-sm text-gray-500 hover:text-gray-700 px-2" type="button" @click="clearSelection">{{ $t('Clear') }}</button>
+            </div>
+        </transition>
+
         <!-- ── Kanban Board ── -->
         <div class="dash-kanban-main px-4 sm:px-6 lg:px-8 py-4">
             <div class="dash-kanban-grid">
@@ -66,6 +107,7 @@
                         :list="column.tickets"
                         :group="{ name: 'tickets' }"
                         :animation="150"
+                        :disabled="selectMode"
                         ghost-class="kanban-ghost"
                         drag-class="kanban-drag"
                         :class="[statusTheme(column.status.id).body, 'col-body']"
@@ -75,9 +117,10 @@
                         <div
                             v-for="ticket in column.tickets"
                             :key="ticket.uuid"
-                            :class="[statusTheme(column.status.id).cardBorder, 'kanban-card']"
-                            @click="openTicket(ticket)"
+                            :class="[statusTheme(column.status.id).cardBorder, 'kanban-card', {'kanban-card--selected': isSelected(ticket), 'kanban-card--pick': selectMode}]"
+                            @click="onCardClick(ticket)"
                         >
+                            <span v-if="selectMode" class="bulk-check" :class="{'bulk-check--on': isSelected(ticket)}"></span>
                             <!-- Top row: customer + priority -->
                             <div class="card-top-row">
                                 <div class="card-customer">
@@ -99,6 +142,12 @@
 
                             <!-- Subject -->
                             <div class="card-subject">{{ ticket.subject }}</div>
+
+                            <!-- Department -->
+                            <div v-if="ticket.department" class="card-dept">
+                                <svg-vue class="card-dept-icon" icon="font-awesome.users-class-regular"></svg-vue>
+                                <span class="truncate">{{ ticket.department.name }}</span>
+                            </div>
 
                             <!-- Labels -->
                             <div v-if="ticket.labels && ticket.labels.length > 0" class="card-labels">
@@ -295,39 +344,39 @@ import draggable from 'vuedraggable';
 import {mixin as clickaway} from 'vue-clickaway';
 
 const STATUS_THEMES = {
-    1: {
-        header:     'bg-blue-500 text-white',
-        body:       'bg-blue-50',
+    1: { // Open — pink
+        header:     'bg-pink-500 text-white',
+        body:       'bg-pink-100',
         dot:        'bg-white',
-        badge:      'bg-blue-600 text-white',
-        cardBorder: 'border-l-4 border-blue-400',
+        badge:      'bg-pink-600 text-white',
+        cardBorder: 'border-l-4 border-pink-400',
     },
-    2: {
-        header:     'bg-orange-400 text-white',
-        body:       'bg-orange-50',
+    2: { // Pending — yellow
+        header:     'bg-yellow-500 text-white',
+        body:       'bg-yellow-100',
         dot:        'bg-white',
-        badge:      'bg-orange-500 text-white',
+        badge:      'bg-yellow-600 text-white',
+        cardBorder: 'border-l-4 border-yellow-400',
+    },
+    3: { // Resolved — orange
+        header:     'bg-orange-500 text-white',
+        body:       'bg-orange-100',
+        dot:        'bg-white',
+        badge:      'bg-orange-600 text-white',
         cardBorder: 'border-l-4 border-orange-400',
     },
-    3: {
+    4: { // Closed — green
         header:     'bg-green-500 text-white',
-        body:       'bg-green-50',
+        body:       'bg-green-100',
         dot:        'bg-white',
         badge:      'bg-green-600 text-white',
         cardBorder: 'border-l-4 border-green-400',
-    },
-    4: {
-        header:     'bg-gray-500 text-white',
-        body:       'bg-gray-100',
-        dot:        'bg-white',
-        badge:      'bg-gray-600 text-white',
-        cardBorder: 'border-l-4 border-gray-400',
     },
 };
 
 const DEFAULT_THEME = {
     header:     'bg-indigo-500 text-white',
-    body:       'bg-indigo-50',
+    body:       'bg-indigo-100',
     dot:        'bg-white',
     badge:      'bg-indigo-600 text-white',
     cardBorder: 'border-l-4 border-indigo-400',
@@ -366,6 +415,8 @@ export default {
                 priorities: [],
             },
             searchTimer: null,
+            selectMode: false,
+            selectedIds: [],
         };
     },
     computed: {
@@ -376,6 +427,9 @@ export default {
                 + this.filters.departments.length
                 + this.filters.labels.length
                 + this.filters.priorities.length;
+        },
+        statusList() {
+            return this.columns.map(column => column.status);
         },
     },
     mounted() {
@@ -452,6 +506,58 @@ export default {
         },
         openTicket(ticket) {
             this.$router.push('/dashboard/tickets/' + ticket.uuid + '/manage');
+        },
+        // --- Bulk selection -----------------------------------------------------
+        onCardClick(ticket) {
+            if (this.selectMode) {
+                this.toggleSelect(ticket);
+            } else {
+                this.openTicket(ticket);
+            }
+        },
+        toggleSelectMode() {
+            this.selectMode = !this.selectMode;
+            if (!this.selectMode) {
+                this.clearSelection();
+            }
+        },
+        isSelected(ticket) {
+            return this.selectedIds.indexOf(ticket.id) > -1;
+        },
+        toggleSelect(ticket) {
+            const index = this.selectedIds.indexOf(ticket.id);
+            if (index > -1) {
+                this.selectedIds.splice(index, 1);
+            } else {
+                this.selectedIds.push(ticket.id);
+            }
+        },
+        clearSelection() {
+            this.selectedIds = [];
+        },
+        bulkAction(action, value) {
+            if (value === '' || value === null || this.selectedIds.length === 0) return;
+            axios.post('api/dashboard/tickets/quick-actions', {
+                action,
+                value,
+                tickets: this.selectedIds,
+            }).then(() => {
+                this.clearSelection();
+                this.selectMode = false;
+                this.load();
+            }).catch(() => this.load());
+        },
+        bulkDelete() {
+            if (this.selectedIds.length === 0) return;
+            if (!window.confirm(this.$i18n.t('Are you sure you want to delete the ticket?').toString())) return;
+            axios.post('api/dashboard/tickets/quick-actions', {
+                action: 'delete',
+                tickets: this.selectedIds,
+            }).then(() => {
+                this.clearSelection();
+                this.selectMode = false;
+                this.load();
+            }).catch(() => this.load());
         },
         openFiltersSidebar() {
             this.filtersSidebar = true;
@@ -563,6 +669,7 @@ export default {
 
 /* ── Cards ── */
 .kanban-card {
+    position: relative;
     background: #fff;
     border-radius: 0.375rem;
     padding: 0.625rem 0.75rem;
@@ -575,6 +682,60 @@ export default {
 .kanban-card:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transform: translateY(-1px);
+}
+
+/* ── Bulk selection ── */
+.kanban-card--pick {
+    padding-left: 2.25rem;
+}
+
+.kanban-card--selected {
+    box-shadow: 0 0 0 2px #2563eb;
+}
+
+.bulk-check {
+    position: absolute;
+    top: 50%;
+    left: 0.6rem;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid #cbd5e0;
+    border-radius: 4px;
+    background: #fff;
+    transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.bulk-check--on {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.bulk-action-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    z-index: 40;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: calc(100vw - 1.5rem);
+    padding: 0.625rem 0.875rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.18);
+}
+
+.bulk-select {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8rem;
+    color: #374151;
+    background: #fff;
 }
 
 .card-top-row {
@@ -618,6 +779,23 @@ export default {
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-bottom: 0.4rem;
+}
+
+.card-dept {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+    min-width: 0;
+}
+
+.card-dept-icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    color: #9ca3af;
 }
 
 .card-labels {

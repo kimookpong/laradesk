@@ -121,10 +121,28 @@ class Ticket extends Model
 
     public function verifyUser(User $user): bool
     {
-        if ($user->role_id !== 1) {
-            $userId = $user->id;
-            return $this->department_id === null || ($this->department->all_agents || $this->department->agent()->pluck('id')->contains($userId)) || ($this->agent_id === null || $this->agent_id === $userId) || $this->closed_by === $userId;
+        // Admins (role 1) can access every ticket.
+        if ($user->role_id === 1) {
+            return true;
         }
-        return true;
+
+        $userId = $user->id;
+
+        // The agent must belong to the ticket's department — or the ticket has no
+        // department, or the department is open to all agents.
+        $inDepartment = $this->department_id === null
+            || $this->department->all_agents
+            || $this->department->agent()->pluck('id')->contains($userId);
+
+        // ...AND the ticket must be unassigned, assigned to them, or closed by them.
+        $isAssignee = $this->agent_id === null
+            || $this->agent_id === $userId
+            || $this->closed_by === $userId;
+
+        // NOTE (Phase 4 fix): previously every clause was OR'd together, which let
+        // any agent open any unassigned / no-department ticket across all departments.
+        // If unassigned tickets are meant to be a shared cross-department pool,
+        // revert to OR between $inDepartment and $isAssignee.
+        return $inDepartment && $isAssignee;
     }
 }

@@ -124,8 +124,19 @@ class FileController extends Controller
         }
         $videoExtensions = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv', 'ogg', 'm4v', '3gp'];
         if (in_array($file->extension, $videoExtensions)) {
-            $fullPath = Storage::disk($file->disk)->path($file->path.DIRECTORY_SEPARATOR.$file->server_name);
-            return response()->file($fullPath, ['Content-Type' => $file->mime]);
+            $relativePath = $file->path.DIRECTORY_SEPARATOR.$file->server_name;
+            // Local disks can serve the file directly (supports HTTP range requests for seeking).
+            if (config("filesystems.disks.{$file->disk}.driver") === 'local') {
+                return response()->file(
+                    Storage::disk($file->disk)->path($relativePath),
+                    ['Content-Type' => $file->mime]
+                );
+            }
+            // Remote disks (e.g. S3) have no local path — stream the contents inline instead.
+            return Storage::disk($file->disk)->response($relativePath, $file->name, [
+                'Content-Type' => $file->mime,
+                'Content-Disposition' => 'inline; filename="'.$file->name.'"',
+            ]);
         }
         return Storage::disk($file->disk)->download($file->path.DIRECTORY_SEPARATOR.$file->server_name, $file->name);
     }

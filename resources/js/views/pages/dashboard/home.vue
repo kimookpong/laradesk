@@ -8,8 +8,9 @@
                 <div class="py-4">
                     <stats/>
                 </div>
-                <div class="py-4">
+                <div class="py-4 grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <opened-tickets/>
+                    <user-registrations/>
                 </div>
             </template>
         </div>
@@ -19,6 +20,7 @@
 <script>
 import Stats from "@/components/widgets/stats";
 import OpenedTickets from "@/components/widgets/opened-tickets";
+import UserRegistrations from "@/components/widgets/user-registrations";
 
 export default {
     name: "home",
@@ -27,6 +29,6 @@ export default {
             title: this.$i18n.t('Dashboard')
         }
     },
-    components: {OpenedTickets, Stats}
+    components: {OpenedTickets, UserRegistrations, Stats}
 }
 </script>

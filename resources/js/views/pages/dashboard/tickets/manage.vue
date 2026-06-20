@@ -9,7 +9,7 @@
                             <button class="btn p-4 rounded-none" type="button" @click="$router.push('/dashboard/tickets')">
                                 <svg-vue class="h-5 w-5 text-gray-700" icon="font-awesome.chevron-left-regular"></svg-vue>
                             </button>
-                            <div v-on-clickaway="closeActionDropdown" class="block">
+                            <div v-if="canEdit" v-on-clickaway="closeActionDropdown" class="block">
                                 <div class="relative inline-block text-left">
                                     <button class="btn p-4 rounded-none" type="button" @click="toggleActionDropdown('agent')">
                                         <svg-vue class="h-5 w-5 text-gray-700" icon="font-awesome.user-tag-regular"></svg-vue>
@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn p-4 rounded-none" type="button" @click="deleteTicketModal = true">
+                            <button v-if="canEdit" class="btn p-4 rounded-none" type="button" @click="deleteTicketModal = true">
                                 <svg-vue class="h-5 w-5 text-gray-700" icon="font-awesome.trash-alt-regular"></svg-vue>
                             </button>
                         </div>
@@ -120,7 +120,7 @@
                                         class="inline-flex items-center px-2 py-0.5 mr-1 rounded text-xs font-medium leading-4 text-gray-100"
                                     >
                                         {{ label.name }}
-                                        <button class="flex-shrink-0 ml-1.5 inline-flex text-gray-100 focus:outline-none focus:text-gray-100 cursor-pointer" type="button" @click="removeLabel(index)">
+                                        <button v-if="canEdit" class="flex-shrink-0 ml-1.5 inline-flex text-gray-100 focus:outline-none focus:text-gray-100 cursor-pointer" type="button" @click="removeLabel(index)">
                                             <svg-vue class="h-3 w-3" icon="font-awesome.times-solid"></svg-vue>
                                         </button>
                                     </div>
@@ -151,6 +151,33 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Ticket details (mobile/tablet only — desktop shows them in the right panel) -->
+                        <div class="lg:hidden grid grid-cols-2 gap-4 px-6 py-3 border-b">
+                            <div>
+                                <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Agent') }}</div>
+                                <div v-if="ticket.agent" class="flex items-center">
+                                    <img :alt="ticket.agent.name" :src="ticket.agent.avatar !== 'gravatar' ? ticket.agent.avatar : ticket.agent.gravatar" class="h-5 w-5 rounded-full mr-1.5">
+                                    <span class="text-sm text-gray-800 truncate">{{ ticket.agent.name }}</span>
+                                </div>
+                                <span v-else class="text-sm text-gray-400">{{ $t('Without assign agent') }}</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Department') }}</div>
+                                <span class="text-sm text-gray-800">{{ ticket.department ? ticket.department.name : '—' }}</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Priority') }}</div>
+                                <span v-if="ticket.priority" :class="priorityBadgeClass(ticket.priority.value)" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">{{ ticket.priority.name }}</span>
+                                <span v-else class="text-sm text-gray-400">—</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Labels') }}</div>
+                                <div v-if="ticket.labels && ticket.labels.length" class="flex flex-wrap gap-1">
+                                    <span v-for="label in ticket.labels" :key="label.id" :style="{backgroundColor: label.color}" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white">{{ label.name }}</span>
+                                </div>
+                                <span v-else class="text-sm text-gray-400">—</span>
+                            </div>
+                        </div>
                         <div v-show="replyForm" class="px-6 py-3 border-b">
                             <loading :status="loading.reply"/>
                             <form @submit.prevent="addReply">
@@ -169,7 +196,7 @@
                                     <template v-slot:bottom>
                                         <div class="flex justify-between border border-t-0">
                                             <button
-                                                class="btn btn-secondary rounded-none"
+                                                class="btn btn-secondary rounded-none py-3 sm:py-2"
                                                 type="button"
                                                 @click="discardReply"
                                             >
@@ -180,14 +207,14 @@
                                                     id="status"
                                                     v-model="ticketReply.status_id"
                                                     aria-label="Sort by"
-                                                    class="block form-select pl-3 pr-9 py-2 border-l border-r-0 border-t-0 border-b-0 border-gray-400 rounded-none bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-primary-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                                                    class="block form-select pl-3 pr-9 py-3 sm:py-2 border-l border-r-0 border-t-0 border-b-0 border-gray-400 rounded-none bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-primary-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                                                 >
                                                     <template v-for="status in statusList">
                                                         <option :value="status.id">{{ status.name }}</option>
                                                     </template>
                                                 </select>
                                                 <button
-                                                    class="btn btn-green rounded-none"
+                                                    class="btn btn-green rounded-none py-3 sm:py-2"
                                                     type="submit"
                                                 >
                                                     {{ $t('Send reply') }}
@@ -221,12 +248,35 @@
                                                     {{ ticketReply.user.name }}
                                                 </div>
                                                 <div class="md:flex-1">
-                                                    <div class="md:float-right text-sm">
-                                                        {{ ticketReply.created_at | momentFormatDateTime }}
+                                                    <div class="md:float-right flex items-center text-sm">
+                                                        <button
+                                                            v-if="ownReply(ticketReply) && editingReplyId !== ticketReply.id"
+                                                            class="mr-3 text-primary-600 hover:text-primary-700 focus:outline-none"
+                                                            type="button"
+                                                            @click="startEditReply(ticketReply)"
+                                                        >
+                                                            {{ $t('Edit') }}
+                                                        </button>
+                                                        <span>{{ ticketReply.created_at | momentFormatDateTime }}</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p class="text-gray-700 ticket-reply-body" v-html="ticketReply.body"/>
+                                            <template v-if="editingReplyId === ticketReply.id">
+                                                <input-wysiwyg
+                                                    :id="'edit_reply_' + ticketReply.id"
+                                                    v-model="editReplyBody"
+                                                    :plugins="{images: true}"
+                                                />
+                                                <div class="mt-2 flex gap-2">
+                                                    <button class="btn btn-primary btn-sm rounded-md" type="button" @click="saveEditReply(ticketReply)">
+                                                        {{ $t('Save') }}
+                                                    </button>
+                                                    <button class="btn btn-white btn-sm rounded-md" type="button" @click="cancelEditReply">
+                                                        {{ $t('Cancel') }}
+                                                    </button>
+                                                </div>
+                                            </template>
+                                            <p v-else class="text-gray-700 ticket-reply-body" v-html="ticketReply.body"/>
                                             <template v-if="ticketReply.attachments.length > 0">
                                                 <div class="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                                                     <template v-for="attachment in ticketReply.attachments">
@@ -256,7 +306,7 @@
                     </div>
                 </div>
             </div>
-            <div :style="{flex: '0 0 240px', width: '240px'}" class="bg-gray-100 hidden lg:block border-l">
+            <div :style="{flex: '0 0 260px', width: '260px', height: 'calc(100vh - 70px)'}" class="bg-gray-100 hidden lg:block border-l overflow-y-auto">
                 <div v-if="ticket.user" class="p-6">
                     <div class="flex">
                         <img
@@ -271,6 +321,36 @@
                             <svg-vue class="flex-shrink-0 mr-1.5 h-4 w-4" icon="font-awesome.envelope-solid"></svg-vue>
                             <span class="truncate">{{ ticket.user.email }}</span>
                         </div>
+                    </div>
+                </div>
+                <!-- Ticket details -->
+                <div class="px-6 pb-6 space-y-5">
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Agent') }}</div>
+                        <div v-if="ticket.agent" class="flex items-center">
+                            <img :alt="ticket.agent.name" :src="ticket.agent.avatar !== 'gravatar' ? ticket.agent.avatar : ticket.agent.gravatar" class="h-6 w-6 rounded-full mr-2">
+                            <span class="text-sm text-gray-800 truncate">{{ ticket.agent.name }}</span>
+                        </div>
+                        <span v-else class="text-sm text-gray-400">{{ $t('Without assign agent') }}</span>
+                    </div>
+                    <div>
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Department') }}</div>
+                        <span class="text-sm text-gray-800">{{ ticket.department ? ticket.department.name : '—' }}</span>
+                    </div>
+                    <div>
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Priority') }}</div>
+                        <span v-if="ticket.priority" :class="priorityBadgeClass(ticket.priority.value)" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">{{ ticket.priority.name }}</span>
+                        <span v-else class="text-sm text-gray-400">—</span>
+                    </div>
+                    <div>
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{{ $t('Labels') }}</div>
+                        <div v-if="ticket.labels && ticket.labels.length" class="flex flex-wrap gap-1">
+                            <span v-for="label in ticket.labels" :key="label.id" :style="{backgroundColor: label.color}" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white">{{ label.name }}</span>
+                        </div>
+                        <span v-else class="text-sm text-gray-400">—</span>
+                    </div>
+                    <div v-if="canEdit" class="text-xs text-gray-400 border-t border-gray-200 pt-3">
+                        {{ $t('Use the toolbar above to change agent, department, priority or labels') }}.
                     </div>
                 </div>
             </div>
@@ -398,6 +478,8 @@ export default {
             labelList: [],
             statusList: [],
             priorityList: [],
+            editingReplyId: null,
+            editReplyBody: '',
         }
     },
     filters: {
@@ -408,7 +490,51 @@ export default {
             return moment(value).locale(window.app.app_date_locale).fromNow();
         },
     },
+    computed: {
+        // Editable only when the ticket is "the agent's own": admin, assigned to
+        // them, or created by them.
+        canEdit() {
+            const user = this.$store.state.user;
+            if (!user) return false;
+            if (user.role_id === 1) return true;
+            return this.ticket.agent_id === user.id || this.ticket.user_id === user.id;
+        },
+    },
     methods: {
+        ownReply(ticketReply) {
+            const user = this.$store.state.user;
+            return user && ticketReply.user && ticketReply.user.id === user.id;
+        },
+        startEditReply(ticketReply) {
+            this.editingReplyId = ticketReply.id;
+            this.editReplyBody = ticketReply.body;
+        },
+        cancelEditReply() {
+            this.editingReplyId = null;
+            this.editReplyBody = '';
+        },
+        saveEditReply(ticketReply) {
+            const self = this;
+            axios.patch('api/dashboard/tickets/' + self.$route.params.uuid + '/reply/' + ticketReply.id, {
+                body: self.editReplyBody,
+            }).then(function (response) {
+                self.ticket = response.data.ticket;
+                self.editingReplyId = null;
+                self.editReplyBody = '';
+                self.$notify({
+                    title: self.$i18n.t('Success').toString(),
+                    text: self.$i18n.t('Data saved correctly').toString(),
+                    type: 'success'
+                });
+            }).catch(function () {
+            });
+        },
+        priorityBadgeClass(value) {
+            if (value === 1) return 'bg-green-100 text-green-700';
+            if (value === 2) return 'bg-blue-100 text-blue-700';
+            if (value === 3) return 'bg-orange-100 text-orange-700';
+            return 'bg-red-100 text-red-700';
+        },
         getTicket() {
             const self = this;
             self.loading.form = true;

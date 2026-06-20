@@ -169,6 +169,30 @@ class TicketController extends Controller
     }
 
     /**
+     * Update a reply — only the author may edit their own message.
+     *
+     * @param  Ticket  $ticket
+     * @param  TicketReply  $ticketReply
+     * @param  Request  $request
+     * @return JsonResponse
+     */
+    public function updateReply(Ticket $ticket, TicketReply $ticketReply, Request $request): JsonResponse
+    {
+        if ($ticketReply->ticket_id !== $ticket->id) {
+            return response()->json(['message' => __('Not found')], 404);
+        }
+        if ($ticketReply->user_id !== Auth::id()) {
+            return response()->json(['message' => __('You do not have permissions to manage this ticket')], 403);
+        }
+        $request->validate(['body' => 'required|string']);
+        $ticketReply->body = $request->get('body');
+        $ticketReply->save();
+        $ticket->updated_at = Carbon::now();
+        $ticket->save();
+        return response()->json(['message' => __('Data saved correctly'), 'ticket' => new TicketManageResource($ticket)]);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  Ticket  $ticket
@@ -243,6 +267,20 @@ class TicketController extends Controller
         if ($tickets->count() < 1) {
             return response()->json(['message' => __('You have not selected a ticket or do not have permissions to perform this action')], 403);
         }
+        // Validate the value against the target table (delete needs no value).
+        $valueRules = [
+            'agent'      => ['nullable', 'exists:users,id'],
+            'department' => ['nullable', 'exists:departments,id'],
+            'label'      => ['required', 'exists:labels,id'],
+            'priority'   => ['required', 'exists:priorities,id'],
+            'delete'     => null,
+        ];
+        if (!array_key_exists($action, $valueRules)) {
+            return response()->json(['message' => __('Quick action not found')], 404);
+        }
+        if ($valueRules[$action] !== null) {
+            $request->validate(['value' => $valueRules[$action]]);
+        }
         if ($action === 'agent') {
             $tickets->update(['agent_id' => $request->get('value')]);
             return response()->json(['message' => __('Tickets assigned to the selected agent')]);
@@ -294,6 +332,19 @@ class TicketController extends Controller
         if (!$ticket->verifyUser($user)) {
             return response()->json(['message' => __('You do not have permissions to manage this ticket')], 403);
         }
+        // Validate the value against the target table so quick actions can't persist
+        // invalid ids (agent/department may be null to unassign).
+        $rules = [
+            'agent'      => ['nullable', 'exists:users,id'],
+            'department' => ['nullable', 'exists:departments,id'],
+            'label'      => ['required', 'exists:labels,id'],
+            'priority'   => ['required', 'exists:priorities,id'],
+            'status'     => ['required', 'exists:statuses,id'],
+        ];
+        if (!isset($rules[$action])) {
+            return response()->json(['message' => __('Quick action not found')], 404);
+        }
+        $request->validate(['value' => $rules[$action]]);
         if ($action === 'agent') {
             $ticket->agent_id = $value;
             $ticket->saveOrFail();

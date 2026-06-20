@@ -20,8 +20,11 @@ mix.webpackConfig({
     },
 });
 
-// Copy tinymce skins
-mix.copy('node_modules/tinymce/skins', 'public/js/skins');
+// Copy tinymce skins (skip if already present — re-copy fails on some mounts)
+const fs = require('fs');
+if (!fs.existsSync('public/js/skins')) {
+    mix.copy('node_modules/tinymce/skins', 'public/js/skins');
+}
 
 // Mix version
 if (mix.inProduction()) {

@@ -54,14 +54,14 @@
                                 <template v-slot:bottom>
                                     <div class="flex justify-between border border-t-0">
                                         <button
-                                            class="btn btn-secondary rounded-none"
+                                            class="btn btn-secondary rounded-none py-3 sm:py-2"
                                             type="button"
                                             @click="discardReply"
                                         >
                                             {{ $t('Discard') }}
                                         </button>
                                         <button
-                                            class="btn btn-green rounded-none"
+                                            class="btn btn-green rounded-none py-3 sm:py-2"
                                             type="submit"
                                         >
                                             {{ $t('Send reply') }}

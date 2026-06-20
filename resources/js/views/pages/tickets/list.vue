@@ -70,6 +70,16 @@
                             <div v-if="ticket.department" class="card-dept">
                                 {{ ticket.department.name }}
                             </div>
+                            <div v-if="ticket.labels && ticket.labels.length > 0" class="card-labels">
+                                <span
+                                    v-for="label in ticket.labels"
+                                    :key="label.id"
+                                    :style="{ backgroundColor: label.color }"
+                                    class="card-label"
+                                >
+                                    {{ label.name }}
+                                </span>
+                            </div>
                             <div class="card-dates">
                                 <div class="card-date-row">
                                     <span class="card-date-label">{{ $t('Created at') }}</span>
@@ -104,39 +114,39 @@
 import draggable from 'vuedraggable';
 
 const STATUS_THEMES = {
-    1: {
-        header:     'bg-blue-500 text-white',
-        body:       'bg-blue-50',
+    1: { // Open — pink
+        header:     'bg-pink-500 text-white',
+        body:       'bg-pink-100',
         dot:        'bg-white',
-        badge:      'bg-blue-600 text-white',
-        cardBorder: 'border-l-4 border-blue-400',
+        badge:      'bg-pink-600 text-white',
+        cardBorder: 'border-l-4 border-pink-400',
     },
-    2: {
-        header:     'bg-orange-400 text-white',
-        body:       'bg-orange-50',
+    2: { // Pending — yellow
+        header:     'bg-yellow-500 text-white',
+        body:       'bg-yellow-100',
         dot:        'bg-white',
-        badge:      'bg-orange-500 text-white',
+        badge:      'bg-yellow-600 text-white',
+        cardBorder: 'border-l-4 border-yellow-400',
+    },
+    3: { // Resolved — orange
+        header:     'bg-orange-500 text-white',
+        body:       'bg-orange-100',
+        dot:        'bg-white',
+        badge:      'bg-orange-600 text-white',
         cardBorder: 'border-l-4 border-orange-400',
     },
-    3: {
+    4: { // Closed — green
         header:     'bg-green-500 text-white',
-        body:       'bg-green-50',
+        body:       'bg-green-100',
         dot:        'bg-white',
         badge:      'bg-green-600 text-white',
         cardBorder: 'border-l-4 border-green-400',
-    },
-    4: {
-        header:     'bg-gray-500 text-white',
-        body:       'bg-gray-100',
-        dot:        'bg-white',
-        badge:      'bg-gray-600 text-white',
-        cardBorder: 'border-l-4 border-gray-400',
     },
 };
 
 const DEFAULT_THEME = {
     header:     'bg-indigo-500 text-white',
-    body:       'bg-indigo-50',
+    body:       'bg-indigo-100',
     dot:        'bg-white',
     badge:      'bg-indigo-600 text-white',
     cardBorder: 'border-l-4 border-indigo-400',
@@ -362,6 +372,22 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.card-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.4rem;
+}
+
+.card-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.1rem 0.4rem;
+    border-radius: 9999px;
+    color: #fff;
+    white-space: nowrap;
 }
 
 .card-dates {

@@ -62,6 +62,7 @@ Route::group(['prefix' => 'dashboard'], static function () {
     Route::post('tickets/{ticket}/remove-label', [DashboardTicketController::class, 'removeLabel'])->name('dashboard.tickets.remove-label');
     Route::post('tickets/{ticket}/quick-actions', [DashboardTicketController::class, 'ticketQuickActions'])->name('dashboard.tickets.ticket-quick-actions');
     Route::post('tickets/{ticket}/reply', [DashboardTicketController::class, 'reply'])->name('dashboard.tickets.reply');
+    Route::patch('tickets/{ticket}/reply/{ticketReply}', [DashboardTicketController::class, 'updateReply'])->name('dashboard.tickets.update-reply');
     Route::apiResource('tickets', DashboardTicketController::class)->except(['update']);
 
     Route::apiResource('canned-replies', DashboardCannedReplyController::class);
